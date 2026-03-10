@@ -16,7 +16,7 @@ const RoomTypeDefinition = sequelize.define(
     hotelId: {
       type: DataTypes.UUID,
       allowNull: false,
-      references: { model: 'Hotel', key: 'id' },
+      references: { model: 'hotels', key: 'id' },
       onDelete: 'CASCADE',
     },
     name: {
