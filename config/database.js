@@ -33,8 +33,8 @@ const connectDB = async () => {
     
     // Sync models (in production, use migrations instead)
     if (process.env.NODE_ENV !== 'production') {
-      // Sync in correct order to handle foreign keys
-      await sequelize.sync({ alter: false, force: false });
+      // Use alter:true so missing tables/columns (like Hotel) are created
+      await sequelize.sync({ alter: true, force: false });
       console.log('Database tables synced successfully');
     }
 

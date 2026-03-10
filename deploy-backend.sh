@@ -33,8 +33,8 @@ if npm run | grep -q " build"; then
 fi
 
 echo "♻ Restarting app with PM2 on port $PORT"
-PORT=$PORT pm2 restart "$APP_NAME" --update-env || \
-PORT=$PORT pm2 start npm --name "$APP_NAME" -- start
+NODE_ENV=development PORT=$PORT pm2 restart "$APP_NAME" --update-env || \
+NODE_ENV=development PORT=$PORT pm2 start npm --name "$APP_NAME" -- start
 
 echo "💾 Saving PM2 state"
 pm2 save
