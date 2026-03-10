@@ -32,7 +32,8 @@ const authenticate = async (req, res, next) => {
       ],
     });
 
-    if (!user || !user.isActive) {
+    // Allow super_admin even if isActive is false, but block inactive normal users
+    if (!user || (user.role !== 'super_admin' && user.isActive === false)) {
       return res.status(401).json({ message: 'User not found or inactive' });
     }
 

@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { Hotel, HotelProfile, RoomTypeDefinition, HotelAmenity } = require('../models');
+const { Hotel, HotelProfile, CheckinCheckoutRules, CurrencyLanguageSettings, RoomTypeDefinition, HotelAmenity } = require('../models');
 const { DEFAULT_ROOM_TYPES } = require('../config/defaultRoomTypes');
 const getHotelModels = require('../utils/hotelModels');
 const { authenticate, requireHotelAccess } = require('../middleware/auth');
@@ -12,6 +12,11 @@ const createRoomBillRoutes = require('./roomBillRoutes');
 const createAdvancePaymentRoutes = require('./advancePaymentRoutes');
 const createCombinedBillRoutes = require('./combinedBillRoutes');
 const createReservationDashboardRoutes = require('./reservationDashboardRoutes');
+const createHrDashboardRoutes = require('./hrDashboardRoutes');
+const createAttendanceRoutes = require('./attendanceRoutes');
+const createRolesPermissionsRoutes = require('./rolesPermissionsRoutes');
+const createShiftManagementRoutes = require('./shiftManagementRoutes');
+const createPayrollRoutes = require('./payrollRoutes');
 const createReservationRoutes = require('./reservationRoutes');
 const createGroupBookingRoutes = require('./groupBookingRoutes');
 const createWalkinRoutes = require('./walkinRoutes');
@@ -22,6 +27,28 @@ const createStayAdjustmentRoutes = require('./stayAdjustmentRoutes');
 const createCancellationRoutes = require('./cancellationRoutes');
 const createRefundRoutes = require('./refundRoutes');
 const createCreditNoteRoutes = require('./creditNoteRoutes');
+const createCommissionRoutes = require('./commissionRoutes');
+const createReportsDashboardRoutes = require('./reportsDashboardRoutes');
+const createOccupancyReportRoutes = require('./occupancyReportRoutes');
+const createRoomRevenueRoutes = require('./roomRevenueRoutes');
+const createRestaurantSalesRoutes = require('./restaurantSalesRoutes');
+const createTaxReportRoutes = require('./taxReportRoutes');
+const createTaxesChargesRoutes = require('./taxesChargesRoutes');
+const createPaymentMethodsRoutes = require('./paymentMethodsRoutes');
+const createExpenseReportRoutes = require('./expenseReportRoutes');
+const createInventoryReportRoutes = require('./inventoryReportRoutes');
+const createRevenueReportRoutes = require('./revenueReportRoutes');
+const createStaffPerformanceRoutes = require('./staffPerformanceRoutes');
+const createMarketingDashboardRoutes = require('./marketingDashboardRoutes');
+const createRatePlanRoutes = require('./ratePlanRoutes');
+const createSeasonalPricingRoutes = require('./seasonalPricingRoutes');
+const createCampaignRoutes = require('./campaignRoutes');
+const createPromoCodeRoutes = require('./promoCodeRoutes');
+const createInvoiceTemplatesRoutes = require('./invoiceTemplatesRoutes');
+const createPOSSettingsRoutes = require('./posSettingsRoutes');
+const createIntegrationSettingsRoutes = require('./integrationSettingsRoutes');
+const createThemeSettingsRoutes = require('./themeSettingsRoutes');
+const createAuditLogsRoutes = require('./auditLogsRoutes');
 const createRestaurantBillRoutes = require('./restaurantBillRoutes');
 const createCorporateBillingRoutes = require('./corporateBillingRoutes');
 
@@ -126,6 +153,47 @@ router.use('/:hotelId/combined-bills', createCombinedBillRoutes(getHotelContext)
 // ==================== RESERVATION DASHBOARD (MODULE ROUTER) ====================
 router.use('/:hotelId/reservation-dashboard', createReservationDashboardRoutes(getHotelContext));
 
+// ==================== HR DASHBOARD (MODULE ROUTER) ====================
+router.use('/:hotelId/hr-dashboard', createHrDashboardRoutes(getHotelContext));
+
+// ==================== ATTENDANCE (MODULE ROUTER) ====================
+router.use('/:hotelId/attendance', createAttendanceRoutes(getHotelContext));
+
+// ==================== ROLES & PERMISSIONS (MODULE ROUTER) ====================
+router.use('/:hotelId/roles-permissions', createRolesPermissionsRoutes(getHotelContext));
+
+// ==================== SHIFT MANAGEMENT (MODULE ROUTER) ====================
+router.use('/:hotelId/shift-management', createShiftManagementRoutes(getHotelContext));
+
+// ==================== PAYROLL (MODULE ROUTER) ====================
+router.use('/:hotelId/payroll', createPayrollRoutes(getHotelContext));
+
+// ==================== COMMISSION (MODULE ROUTER) ====================
+router.use('/:hotelId/commission', createCommissionRoutes(getHotelContext));
+
+// ==================== REPORTS DASHBOARD (MODULE ROUTER) ====================
+router.use('/:hotelId/reports-dashboard', createReportsDashboardRoutes(getHotelContext));
+router.use('/:hotelId/occupancy-report', createOccupancyReportRoutes(getHotelContext));
+router.use('/:hotelId/room-revenue', createRoomRevenueRoutes(getHotelContext));
+router.use('/:hotelId/restaurant-sales', createRestaurantSalesRoutes(getHotelContext));
+router.use('/:hotelId/tax-report', createTaxReportRoutes(getHotelContext));
+router.use('/:hotelId/taxes-charges', createTaxesChargesRoutes(getHotelContext));
+router.use('/:hotelId/payment-methods', createPaymentMethodsRoutes(getHotelContext));
+router.use('/:hotelId/invoice-templates', createInvoiceTemplatesRoutes(getHotelContext));
+router.use('/:hotelId/pos-settings', createPOSSettingsRoutes(getHotelContext));
+router.use('/:hotelId/integration-settings', createIntegrationSettingsRoutes(getHotelContext));
+router.use('/:hotelId/theme-settings', createThemeSettingsRoutes(getHotelContext));
+router.use('/:hotelId/expense-report', createExpenseReportRoutes(getHotelContext));
+router.use('/:hotelId/inventory-report', createInventoryReportRoutes(getHotelContext));
+router.use('/:hotelId/revenue-report', createRevenueReportRoutes(getHotelContext));
+router.use('/:hotelId/staff-performance', createStaffPerformanceRoutes(getHotelContext));
+router.use('/:hotelId/marketing-dashboard', createMarketingDashboardRoutes(getHotelContext));
+router.use('/:hotelId/audit-logs', createAuditLogsRoutes(getHotelContext));
+router.use('/:hotelId/rate-plans', createRatePlanRoutes(getHotelContext));
+router.use('/:hotelId/seasonal-pricing', createSeasonalPricingRoutes(getHotelContext));
+router.use('/:hotelId/campaigns', createCampaignRoutes(getHotelContext));
+router.use('/:hotelId/promo-codes', createPromoCodeRoutes(getHotelContext));
+
 // ==================== RESERVATIONS (MODULE ROUTER) ====================
 router.use('/:hotelId/reservations', createReservationRoutes(getHotelContext));
 
@@ -173,42 +241,103 @@ router.get('/:hotelId/profile', getHotelContext, async (req, res) => {
   try {
     const hotel = req.hotel;
 
-    // Load or initialize the HotelProfile row for this hotel
-    let profileRow = await HotelProfile.findOne({
-      where: { hotelId: hotel.id },
-    });
-
-    if (!profileRow) {
-      profileRow = await HotelProfile.create({
-        hotelId: hotel.id,
+    let profileRow;
+    try {
+      profileRow = await HotelProfile.findOne({
+        where: { hotelId: hotel.id },
+      });
+    } catch (findErr) {
+      console.error('HotelProfile.findOne error:', findErr.message);
+      const profile = {
+        name: hotel.name || '',
+        location: hotel.address || '',
+        phone: hotel.phone || '',
+        email: hotel.email || '',
         website: '',
+        plan: hotel.planId || '',
         currency: 'USD',
-        currencySymbol: '₹',
         language: 'English',
         timezone: 'UTC+0',
         dateFormat: 'MM/DD/YYYY',
         timeFormat: 'HH:mm',
-      });
+        currencySymbol: '₹',
+        logoUrl: 'https://via.placeholder.com/150',
+        description: '',
+        openingTime: '',
+        closingTime: '',
+        specialHolidayHours: '',
+        facebookUrl: '',
+        instagramUrl: '',
+        twitterUrl: '',
+        linkedinUrl: '',
+      };
+      return res.json({ profile });
     }
 
-    const profile = {
-      // Core hotel columns
-      name: hotel.name,
-      location: hotel.address,
-      phone: hotel.phone,
-      email: hotel.email,
+    if (!profileRow) {
+      try {
+        profileRow = await HotelProfile.create({
+          hotelId: hotel.id,
+          website: '',
+          currency: 'USD',
+          currencySymbol: '₹',
+          language: 'English',
+          timezone: 'UTC+0',
+          dateFormat: 'MM/DD/YYYY',
+          timeFormat: 'HH:mm',
+        });
+      } catch (createErr) {
+        console.error('HotelProfile.create error (table may need new columns):', createErr.message);
+        const profile = {
+          name: hotel.name || '',
+          location: hotel.address || '',
+          phone: hotel.phone || '',
+          email: hotel.email || '',
+          website: '',
+          plan: hotel.planId || '',
+          currency: 'USD',
+          language: 'English',
+          timezone: 'UTC+0',
+          dateFormat: 'MM/DD/YYYY',
+          timeFormat: 'HH:mm',
+          currencySymbol: '₹',
+          logoUrl: 'https://via.placeholder.com/150',
+          description: '',
+          openingTime: '',
+          closingTime: '',
+          specialHolidayHours: '',
+          facebookUrl: '',
+          instagramUrl: '',
+          twitterUrl: '',
+          linkedinUrl: '',
+        };
+        return res.json({ profile });
+      }
+    }
 
-      // Branding / preferences from HotelProfile
-      website: profileRow.website || '',
-      plan: profileRow.planDisplayName || hotel.planId || '',
-      currency: profileRow.currency || 'USD',
-      language: profileRow.language || 'English',
-      timezone: profileRow.timezone || 'UTC+0',
-      dateFormat: profileRow.dateFormat || 'MM/DD/YYYY',
-      timeFormat: profileRow.timeFormat || 'HH:mm',
-      currencySymbol: profileRow.currencySymbol || '₹',
-      logoUrl:
-        profileRow.logoUrl || 'https://via.placeholder.com/150',
+    const row = profileRow.get ? profileRow.get({ plain: true }) : profileRow;
+    const profile = {
+      name: hotel.name || '',
+      location: hotel.address || '',
+      phone: hotel.phone || '',
+      email: hotel.email || '',
+      website: (row && row.website) || '',
+      plan: (row && row.planDisplayName) || hotel.planId || '',
+      currency: (row && row.currency) || 'USD',
+      language: (row && row.language) || 'English',
+      timezone: (row && row.timezone) || 'UTC+0',
+      dateFormat: (row && row.dateFormat) || 'MM/DD/YYYY',
+      timeFormat: (row && row.timeFormat) || 'HH:mm',
+      currencySymbol: (row && row.currencySymbol) || '₹',
+      logoUrl: (row && row.logoUrl) || 'https://via.placeholder.com/150',
+      description: (row && row.description) || '',
+      openingTime: (row && row.openingTime) || '',
+      closingTime: (row && row.closingTime) || '',
+      specialHolidayHours: (row && row.specialHolidayHours) || '',
+      facebookUrl: (row && row.facebookUrl) || '',
+      instagramUrl: (row && row.instagramUrl) || '',
+      twitterUrl: (row && row.twitterUrl) || '',
+      linkedinUrl: (row && row.linkedinUrl) || '',
     };
 
     res.json({ profile });
@@ -240,6 +369,14 @@ router.put(
     body('timeFormat').optional().isString(),
     body('plan').optional().isString(),
     body('logoUrl').optional().isString(),
+    body('description').optional().isString(),
+    body('openingTime').optional().isString(),
+    body('closingTime').optional().isString(),
+    body('specialHolidayHours').optional().isString(),
+    body('facebookUrl').optional().isString(),
+    body('instagramUrl').optional().isString(),
+    body('twitterUrl').optional().isString(),
+    body('linkedinUrl').optional().isString(),
   ],
   async (req, res) => {
     try {
@@ -265,6 +402,14 @@ router.put(
         timeFormat,
         plan,
         logoUrl,
+        description,
+        openingTime,
+        closingTime,
+        specialHolidayHours,
+        facebookUrl,
+        instagramUrl,
+        twitterUrl,
+        linkedinUrl,
       } = req.body;
 
       if (name !== undefined) hotel.name = name;
@@ -291,6 +436,14 @@ router.put(
       if (timeFormat !== undefined) profileRow.timeFormat = timeFormat;
       if (plan !== undefined) profileRow.planDisplayName = plan;
       if (logoUrl !== undefined) profileRow.logoUrl = logoUrl;
+      if (description !== undefined) profileRow.description = description;
+      if (openingTime !== undefined) profileRow.openingTime = openingTime;
+      if (closingTime !== undefined) profileRow.closingTime = closingTime;
+      if (specialHolidayHours !== undefined) profileRow.specialHolidayHours = specialHolidayHours;
+      if (facebookUrl !== undefined) profileRow.facebookUrl = facebookUrl;
+      if (instagramUrl !== undefined) profileRow.instagramUrl = instagramUrl;
+      if (twitterUrl !== undefined) profileRow.twitterUrl = twitterUrl;
+      if (linkedinUrl !== undefined) profileRow.linkedinUrl = linkedinUrl;
 
       await profileRow.save();
 
@@ -309,6 +462,14 @@ router.put(
         currencySymbol: profileRow.currencySymbol || '₹',
         logoUrl:
           profileRow.logoUrl || 'https://via.placeholder.com/150',
+        description: profileRow.description || '',
+        openingTime: profileRow.openingTime || '',
+        closingTime: profileRow.closingTime || '',
+        specialHolidayHours: profileRow.specialHolidayHours || '',
+        facebookUrl: profileRow.facebookUrl || '',
+        instagramUrl: profileRow.instagramUrl || '',
+        twitterUrl: profileRow.twitterUrl || '',
+        linkedinUrl: profileRow.linkedinUrl || '',
       };
 
       res.json({ profile: updatedProfile });
@@ -355,6 +516,249 @@ router.post(
       res.status(201).json({ logoUrl });
     } catch (error) {
       console.error('Upload logo error:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+);
+
+// ==================== CHECK-IN / CHECK-OUT RULES ====================
+
+const defaultRules = () => ({
+  standardCheckInTime: '14:00',
+  standardCheckOutTime: '11:00',
+  allowEarlyCheckin: false,
+  earliestCheckinTime: '',
+  earlyCheckinFeeType: 'fixed',
+  earlyCheckinFee: 0,
+  allowLateCheckout: false,
+  latestCheckoutTime: '',
+  lateCheckoutFeeType: 'fixed',
+  lateCheckoutFee: 0,
+  hourlyExtensionRate: 0,
+  gracePeriodMinutes: 0,
+  chargeAfterGracePeriod: true,
+  autoCheckoutAfterMinutes: 0,
+  sendCheckoutReminder: false,
+  policyNotes: '',
+  specialInstructions: '',
+});
+
+router.get('/:hotelId/checkin-checkout-rules', getHotelContext, async (req, res) => {
+  try {
+    const hotel = req.hotel;
+    let row = await CheckinCheckoutRules.findOne({ where: { hotelId: hotel.id } }).catch(() => null);
+    if (!row) {
+      row = await CheckinCheckoutRules.create({ hotelId: hotel.id, ...defaultRules() }).catch(() => null);
+    }
+    const rules = row ? row.get({ plain: true }) : defaultRules();
+    delete rules.id;
+    delete rules.hotelId;
+    delete rules.createdAt;
+    delete rules.updatedAt;
+    res.json({ rules });
+  } catch (error) {
+    console.error('Get checkin-checkout rules error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+router.put(
+  '/:hotelId/checkin-checkout-rules',
+  getHotelContext,
+  [
+    body('standardCheckInTime').optional().isString(),
+    body('standardCheckOutTime').optional().isString(),
+    body('allowEarlyCheckin').optional().isBoolean(),
+    body('earliestCheckinTime').optional().isString(),
+    body('earlyCheckinFeeType').optional().isString(),
+    body('earlyCheckinFee').optional().isNumeric(),
+    body('allowLateCheckout').optional().isBoolean(),
+    body('latestCheckoutTime').optional().isString(),
+    body('lateCheckoutFeeType').optional().isString(),
+    body('lateCheckoutFee').optional().isNumeric(),
+    body('hourlyExtensionRate').optional().isNumeric(),
+    body('gracePeriodMinutes').optional().isInt({ min: 0 }),
+    body('chargeAfterGracePeriod').optional().isBoolean(),
+    body('autoCheckoutAfterMinutes').optional().isInt({ min: 0 }),
+    body('sendCheckoutReminder').optional().isBoolean(),
+    body('policyNotes').optional().isString(),
+    body('specialInstructions').optional().isString(),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+      const hotel = req.hotel;
+      const allowed = [
+        'standardCheckInTime', 'standardCheckOutTime', 'allowEarlyCheckin', 'earliestCheckinTime',
+        'earlyCheckinFeeType', 'earlyCheckinFee', 'allowLateCheckout', 'latestCheckoutTime',
+        'lateCheckoutFeeType', 'lateCheckoutFee', 'hourlyExtensionRate', 'gracePeriodMinutes',
+        'chargeAfterGracePeriod', 'autoCheckoutAfterMinutes', 'sendCheckoutReminder',
+        'policyNotes', 'specialInstructions',
+      ];
+      let row = await CheckinCheckoutRules.findOne({ where: { hotelId: hotel.id } });
+      if (!row) row = await CheckinCheckoutRules.create({ hotelId: hotel.id, ...defaultRules() });
+      for (const key of allowed) {
+        if (req.body[key] !== undefined) row[key] = req.body[key];
+      }
+      await row.save();
+      const rules = row.get({ plain: true });
+      delete rules.id;
+      delete rules.hotelId;
+      delete rules.createdAt;
+      delete rules.updatedAt;
+      res.json({ rules });
+    } catch (error) {
+      console.error('Update checkin-checkout rules error:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }
+);
+
+// ==================== CURRENCY & LANGUAGE ====================
+
+function defaultCurrencyLanguage(profileRow) {
+  return {
+    currency: (profileRow && profileRow.currency) || 'USD',
+    currencySymbol: (profileRow && profileRow.currencySymbol) || '₹',
+    language: (profileRow && profileRow.language) || 'English',
+    timezone: (profileRow && profileRow.timezone) || 'UTC+0',
+    dateFormat: (profileRow && profileRow.dateFormat) || 'MM/DD/YYYY',
+    timeFormat: (profileRow && profileRow.timeFormat) || 'HH:mm',
+    decimalPrecision: 2,
+    thousandsSeparator: ',',
+    decimalSeparator: '.',
+    currencyRounding: 'nearest',
+    exchangeRates: [],
+    enabledLanguages: ['en'],
+    defaultLanguage: 'en',
+    autoTimeSync: true,
+  };
+}
+
+router.get('/:hotelId/currency-language', getHotelContext, async (req, res) => {
+  try {
+    const hotel = req.hotel;
+    const profileRow = await HotelProfile.findOne({ where: { hotelId: hotel.id } }).catch(() => null);
+    let settingsRow = await CurrencyLanguageSettings.findOne({ where: { hotelId: hotel.id } }).catch(() => null);
+    if (!settingsRow) {
+      try {
+        settingsRow = await CurrencyLanguageSettings.create({ hotelId: hotel.id });
+      } catch (e) {
+        settingsRow = null;
+      }
+    }
+    const p = profileRow && profileRow.get ? profileRow.get({ plain: true }) : {};
+    const s = settingsRow && settingsRow.get ? settingsRow.get({ plain: true }) : {};
+    let exchangeRates = [];
+    try {
+      exchangeRates = typeof s.exchangeRates === 'string' ? JSON.parse(s.exchangeRates || '[]') : (s.exchangeRates || []);
+    } catch (_) {}
+    let enabledLanguages = ['en'];
+    try {
+      enabledLanguages = typeof s.enabledLanguages === 'string' ? JSON.parse(s.enabledLanguages || '["en"]') : (s.enabledLanguages || ['en']);
+    } catch (_) {}
+    const settings = {
+      currency: p.currency || 'USD',
+      currencySymbol: p.currencySymbol || '₹',
+      language: p.language || 'English',
+      timezone: p.timezone || 'UTC+0',
+      dateFormat: p.dateFormat || 'MM/DD/YYYY',
+      timeFormat: p.timeFormat || 'HH:mm',
+      decimalPrecision: s.decimalPrecision != null ? s.decimalPrecision : 2,
+      thousandsSeparator: s.thousandsSeparator != null ? s.thousandsSeparator : ',',
+      decimalSeparator: s.decimalSeparator != null ? s.decimalSeparator : '.',
+      currencyRounding: s.currencyRounding || 'nearest',
+      exchangeRates,
+      enabledLanguages,
+      defaultLanguage: s.defaultLanguage || 'en',
+      autoTimeSync: s.autoTimeSync !== false,
+    };
+    res.json({ settings });
+  } catch (error) {
+    console.error('Get currency-language error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+router.put(
+  '/:hotelId/currency-language',
+  getHotelContext,
+  [
+    body('currency').optional().isString(),
+    body('currencySymbol').optional().isString(),
+    body('language').optional().isString(),
+    body('timezone').optional().isString(),
+    body('dateFormat').optional().isString(),
+    body('timeFormat').optional().isString(),
+    body('decimalPrecision').optional().isInt({ min: 0, max: 6 }),
+    body('thousandsSeparator').optional().isString(),
+    body('decimalSeparator').optional().isString(),
+    body('currencyRounding').optional().isString(),
+    body('exchangeRates').optional(),
+    body('enabledLanguages').optional(),
+    body('defaultLanguage').optional().isString(),
+    body('autoTimeSync').optional().isBoolean(),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+      const hotel = req.hotel;
+      const body = req.body;
+
+      let profileRow = await HotelProfile.findOne({ where: { hotelId: hotel.id } });
+      if (!profileRow) profileRow = await HotelProfile.create({ hotelId: hotel.id });
+      if (body.currency !== undefined) profileRow.currency = body.currency;
+      if (body.currencySymbol !== undefined) profileRow.currencySymbol = body.currencySymbol;
+      if (body.language !== undefined) profileRow.language = body.language;
+      if (body.timezone !== undefined) profileRow.timezone = body.timezone;
+      if (body.dateFormat !== undefined) profileRow.dateFormat = body.dateFormat;
+      if (body.timeFormat !== undefined) profileRow.timeFormat = body.timeFormat;
+      await profileRow.save();
+
+      let settingsRow = await CurrencyLanguageSettings.findOne({ where: { hotelId: hotel.id } });
+      if (!settingsRow) settingsRow = await CurrencyLanguageSettings.create({ hotelId: hotel.id });
+      if (body.decimalPrecision !== undefined) settingsRow.decimalPrecision = body.decimalPrecision;
+      if (body.thousandsSeparator !== undefined) settingsRow.thousandsSeparator = body.thousandsSeparator;
+      if (body.decimalSeparator !== undefined) settingsRow.decimalSeparator = body.decimalSeparator;
+      if (body.currencyRounding !== undefined) settingsRow.currencyRounding = body.currencyRounding;
+      if (body.exchangeRates !== undefined) settingsRow.exchangeRates = typeof body.exchangeRates === 'string' ? body.exchangeRates : JSON.stringify(Array.isArray(body.exchangeRates) ? body.exchangeRates : []);
+      if (body.enabledLanguages !== undefined) settingsRow.enabledLanguages = typeof body.enabledLanguages === 'string' ? body.enabledLanguages : JSON.stringify(Array.isArray(body.enabledLanguages) ? body.enabledLanguages : ['en']);
+      if (body.defaultLanguage !== undefined) settingsRow.defaultLanguage = body.defaultLanguage;
+      if (body.autoTimeSync !== undefined) settingsRow.autoTimeSync = body.autoTimeSync;
+      await settingsRow.save();
+
+      const p = profileRow.get({ plain: true });
+      const s = settingsRow.get({ plain: true });
+      let exchangeRates = [];
+      try {
+        exchangeRates = typeof s.exchangeRates === 'string' ? JSON.parse(s.exchangeRates || '[]') : (s.exchangeRates || []);
+      } catch (_) {}
+      let enabledLanguages = ['en'];
+      try {
+        enabledLanguages = typeof s.enabledLanguages === 'string' ? JSON.parse(s.enabledLanguages || '["en"]') : (s.enabledLanguages || ['en']);
+      } catch (_) {}
+      res.json({
+        settings: {
+          currency: p.currency || 'USD',
+          currencySymbol: p.currencySymbol || '₹',
+          language: p.language || 'English',
+          timezone: p.timezone || 'UTC+0',
+          dateFormat: p.dateFormat || 'MM/DD/YYYY',
+          timeFormat: p.timeFormat || 'HH:mm',
+          decimalPrecision: s.decimalPrecision != null ? s.decimalPrecision : 2,
+          thousandsSeparator: s.thousandsSeparator != null ? s.thousandsSeparator : ',',
+          decimalSeparator: s.decimalSeparator != null ? s.decimalSeparator : '.',
+          currencyRounding: s.currencyRounding || 'nearest',
+          exchangeRates,
+          enabledLanguages,
+          defaultLanguage: s.defaultLanguage || 'en',
+          autoTimeSync: s.autoTimeSync !== false,
+        },
+      });
+    } catch (error) {
+      console.error('Update currency-language error:', error);
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   }
@@ -4224,6 +4628,7 @@ const ATTENDANCE_STATUSES = ['Present', 'Absent', 'On Leave', 'Off'];
 router.get('/:hotelId/staff-members', getHotelContext, async (req, res) => {
   try {
     const { StaffMember } = req.hotelModels;
+    await StaffMember.sync({ alter: false });
     const where = {};
     if (req.query.includeInactive !== 'true') {
       where.isActive = true;

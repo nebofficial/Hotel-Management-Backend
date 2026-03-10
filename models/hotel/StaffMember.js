@@ -31,23 +31,10 @@ const createStaffMemberModel = (sequelize, schemaName) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      roomNo: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      floor: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true,
-      },
-      colorTag: {
-        // Optional color hint for UI badges
-        type: DataTypes.STRING,
-        allowNull: true,
       },
     },
     {

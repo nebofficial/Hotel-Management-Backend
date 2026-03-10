@@ -20,7 +20,11 @@ const createLinenItemModel = require('../models/hotel/LinenItem');
 const createLinenUsageModel = require('../models/hotel/LinenUsage');
 const createStaffMemberModel = require('../models/hotel/StaffMember');
 const createStaffScheduleModel = require('../models/hotel/StaffSchedule');
+const createLeaveRequestModel = require('../models/hotel/LeaveRequest');
+const createDepartmentModel = require('../models/hotel/Department');
+const createAttendanceModel = require('../models/hotel/Attendance');
 const createRestaurantBillModel = require('../models/hotel/RestaurantBill');
+const createPOSSettingsModel = require('../models/hotel/POSSettings');
 const createMenuCategoryModel = require('../models/hotel/MenuCategory');
 const createMenuItemModel = require('../models/hotel/MenuItem');
 const createRestaurantTableModel = require('../models/hotel/RestaurantTable');
@@ -61,10 +65,33 @@ const createInvoiceModel = require('../models/hotel/Invoice');
 const createCorporateAccountModel = require('../models/hotel/CorporateAccount');
 const createCorporateInvoiceModel = require('../models/hotel/CorporateInvoice');
 const createTaxSettingModel = require('../models/hotel/TaxSetting');
+const createTaxRuleModel = require('../models/hotel/TaxRule');
+const createInvoiceTemplateModel = require('../models/hotel/InvoiceTemplate');
+const createPaymentMethodModel = require('../models/hotel/PaymentMethod');
+const createPaymentTransactionModel = require('../models/hotel/PaymentTransaction');
 const createJournalEntryModel = require('../models/hotel/JournalEntry');
 const createRoomBillModel = require('../models/hotel/RoomBill');
 const createRefundModel = require('../models/hotel/Refund');
 const createCreditNoteModel = require('../models/hotel/CreditNote');
+const createShiftModel = require('../models/hotel/Shift');
+const createShiftAssignmentModel = require('../models/hotel/ShiftAssignment');
+const createShiftChangeRequestModel = require('../models/hotel/ShiftChangeRequest');
+const createSalaryStructureModel = require('../models/hotel/SalaryStructure');
+const createAllowanceTypeModel = require('../models/hotel/AllowanceType');
+const createStaffAllowanceModel = require('../models/hotel/StaffAllowance');
+const createDeductionTypeModel = require('../models/hotel/DeductionType');
+const createStaffDeductionModel = require('../models/hotel/StaffDeduction');
+const createStaffBonusModel = require('../models/hotel/StaffBonus');
+const createPayrollRunModel = require('../models/hotel/PayrollRun');
+const createPayrollEntryModel = require('../models/hotel/PayrollEntry');
+const createCommissionRuleModel = require('../models/hotel/CommissionRule');
+const createCommissionTransactionModel = require('../models/hotel/CommissionTransaction');
+const createRatePlanModel = require('../models/hotel/RatePlan');
+const createSeasonalPricingRuleModel = require('../models/hotel/SeasonalPricingRule');
+const createCampaignModel = require('../models/hotel/Campaign');
+const createCampaignTemplateModel = require('../models/hotel/CampaignTemplate');
+const createIntegrationModel = require('../models/hotel/Integration');
+const createThemeSettingsModel = require('../models/hotel/ThemeSettings');
 
 // Cache for models to avoid recreating them
 const modelCache = new Map();
@@ -104,6 +131,9 @@ const getHotelModels = (hotelName) => {
     LinenUsage: createLinenUsageModel(sequelize, schemaName),
     StaffMember: createStaffMemberModel(sequelize, schemaName),
     StaffSchedule: createStaffScheduleModel(sequelize, schemaName),
+    LeaveRequest: createLeaveRequestModel(sequelize, schemaName),
+    Department: createDepartmentModel(sequelize, schemaName),
+    Attendance: createAttendanceModel(sequelize, schemaName),
     RestaurantBill: createRestaurantBillModel(sequelize, schemaName),
     MenuCategory: createMenuCategoryModel(sequelize, schemaName),
     MenuItem: createMenuItemModel(sequelize, schemaName),
@@ -145,10 +175,34 @@ const getHotelModels = (hotelName) => {
     CorporateAccount: createCorporateAccountModel(sequelize, schemaName),
     CorporateInvoice: createCorporateInvoiceModel(sequelize, schemaName),
     TaxSetting: createTaxSettingModel(sequelize, schemaName),
+    TaxRule: createTaxRuleModel(sequelize, schemaName),
+    InvoiceTemplate: createInvoiceTemplateModel(sequelize, schemaName),
+    PaymentMethod: createPaymentMethodModel(sequelize, schemaName),
+    PaymentTransaction: createPaymentTransactionModel(sequelize, schemaName),
     JournalEntry: createJournalEntryModel(sequelize, schemaName),
     RoomBill: createRoomBillModel(sequelize, schemaName),
     Refund: createRefundModel(sequelize, schemaName),
     CreditNote: createCreditNoteModel(sequelize, schemaName),
+    Shift: createShiftModel(sequelize, schemaName),
+    ShiftAssignment: createShiftAssignmentModel(sequelize, schemaName),
+    ShiftChangeRequest: createShiftChangeRequestModel(sequelize, schemaName),
+    SalaryStructure: createSalaryStructureModel(sequelize, schemaName),
+    AllowanceType: createAllowanceTypeModel(sequelize, schemaName),
+    StaffAllowance: createStaffAllowanceModel(sequelize, schemaName),
+    DeductionType: createDeductionTypeModel(sequelize, schemaName),
+    StaffDeduction: createStaffDeductionModel(sequelize, schemaName),
+    StaffBonus: createStaffBonusModel(sequelize, schemaName),
+    PayrollRun: createPayrollRunModel(sequelize, schemaName),
+    PayrollEntry: createPayrollEntryModel(sequelize, schemaName),
+    CommissionRule: createCommissionRuleModel(sequelize, schemaName),
+    CommissionTransaction: createCommissionTransactionModel(sequelize, schemaName),
+    RatePlan: createRatePlanModel(sequelize, schemaName),
+    SeasonalPricingRule: createSeasonalPricingRuleModel(sequelize, schemaName),
+    Campaign: createCampaignModel(sequelize, schemaName),
+    CampaignTemplate: createCampaignTemplateModel(sequelize, schemaName),
+    POSSettings: createPOSSettingsModel(sequelize, schemaName),
+    Integration: createIntegrationModel(sequelize, schemaName),
+    ThemeSettings: createThemeSettingsModel(sequelize, schemaName),
   };
 
   // Cache the models

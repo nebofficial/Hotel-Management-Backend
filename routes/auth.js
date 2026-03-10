@@ -120,8 +120,8 @@ router.post(
         return res.status(400).json({ message: 'Invalid credentials' });
       }
 
-      // Check if user is active
-      if (!user.isActive) {
+      // Check if user is active (except super_admin which should never be locked out)
+      if (user.role !== 'super_admin' && user.isActive === false) {
         return res.status(400).json({ message: 'Account is inactive' });
       }
 

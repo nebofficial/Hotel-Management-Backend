@@ -55,6 +55,38 @@ const HotelProfile = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    openingTime: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    closingTime: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    specialHolidayHours: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    facebookUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    instagramUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    twitterUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    linkedinUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: 'hotel_profiles',

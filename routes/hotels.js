@@ -80,9 +80,9 @@ router.post(
     body('address').trim().notEmpty(),
     body('phone').trim().notEmpty(),
     body('email').isEmail().normalizeEmail(),
-    body('hotelAdminEmail').isEmail().normalizeEmail(),
-    body('hotelAdminName').trim().notEmpty(),
-    body('hotelAdminPassword').isLength({ min: 6 }),
+    body('hotelAdminEmail').optional().isEmail().normalizeEmail(),
+    body('hotelAdminName').optional().trim(),
+    body('hotelAdminPassword').optional().isLength({ min: 6 }),
   ],
   async (req, res) => {
     try {
@@ -99,10 +99,11 @@ router.post(
         return res.status(400).json({ message: 'Hotel with this name already exists' });
       }
 
-      // Check if hotel admin email already exists
-      const existingUser = await User.findOne({ where: { email: hotelAdminEmail.toLowerCase() } });
-      if (existingUser) {
-        return res.status(400).json({ message: 'Hotel admin email already exists' });
+      if (hotelAdminEmail) {
+        const existingUser = await User.findOne({ where: { email: hotelAdminEmail.toLowerCase() } });
+        if (existingUser) {
+          return res.status(400).json({ message: 'Hotel admin email already exists' });
+        }
       }
 
       // Create hotel
@@ -117,27 +118,28 @@ router.post(
       // Create hotel-specific schema
       await MultiTenantDB.createHotelDatabase(name);
 
-      // Create hotel admin user
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(hotelAdminPassword, salt);
-
-      const hotelAdmin = await User.create({
-        email: hotelAdminEmail.toLowerCase(),
-        name: hotelAdminName,
-        password: hashedPassword,
-        role: 'hotel_admin',
-        hotelId: hotel.id,
-        isActive: true,
-      });
+      let hotelAdmin = null;
+      if (hotelAdminEmail && hotelAdminName && hotelAdminPassword) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(hotelAdminPassword, salt);
+        hotelAdmin = await User.create({
+          email: hotelAdminEmail.toLowerCase(),
+          name: hotelAdminName,
+          password: hashedPassword,
+          role: 'hotel_admin',
+          hotelId: hotel.id,
+          isActive: true,
+        });
+      }
 
       res.status(201).json({ 
         hotel,
-        hotelAdmin: {
+        hotelAdmin: hotelAdmin ? {
           id: hotelAdmin.id,
           email: hotelAdmin.email,
           name: hotelAdmin.name,
           role: hotelAdmin.role,
-        }
+        } : null,
       });
     } catch (error) {
       console.error('Create hotel error:', error);
@@ -172,7 +174,7 @@ router.put(
         return res.status(404).json({ message: 'Hotel not found' });
       }
 
-      const { name, address, phone, email, planId } = req.body;
+      const { name, address, phone, email, planId, isActive } = req.body;
 
       // If name changed, create new schema (Note: In production, you might want to migrate data)
       if (name && name !== hotel.name) {
@@ -185,6 +187,7 @@ router.put(
       if (phone) hotel.phone = phone;
       if (email) hotel.email = email.toLowerCase();
       if (planId !== undefined) hotel.planId = planId;
+      if (typeof isActive === 'boolean') hotel.isActive = isActive;
 
       await hotel.save();
 
@@ -201,6 +204,107 @@ router.put(
  * @desc    Delete hotel
  * @access  Private (Super Admin only)
  */
+/**
+ * @route   PATCH /api/hotels/:id/status
+ * @desc    Toggle property active status
+ * @access  Private (Super Admin only)
+ */
+router.patch('/:id/status', requireSuperAdmin, async (req, res) => {
+  try {
+    const hotel = await Hotel.findByPk(req.params.id);
+    if (!hotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+    hotel.isActive = req.body.isActive !== false;
+    await hotel.save();
+    res.json({ hotel });
+  } catch (error) {
+    console.error('Update hotel status error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/hotels/:id/profile
+ * @desc    Get property profile with room count and manager
+ * @access  Private
+ */
+router.get('/:id/profile', async (req, res) => {
+  try {
+    const hotel = await Hotel.findByPk(req.params.id, {
+      include: [{ model: Plan, as: 'plan', attributes: ['id', 'name'] }],
+    });
+    if (!hotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+    if (req.user.role !== 'super_admin' && req.user.hotelId?.toString() !== hotel.id.toString()) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const managers = await User.findAll({
+      where: { hotelId: hotel.id, role: { [Op.in]: ['hotel_admin', 'user'] } },
+      attributes: ['id', 'name', 'email', 'role'],
+    });
+
+    let totalRooms = 0;
+    let roomCategories = [];
+    try {
+      const getHotelModels = require('../utils/hotelModels');
+      const models = getHotelModels(hotel.name);
+      const rooms = await models.Room?.findAll({ where: { status: { [Op.ne]: 'maintenance' } } }) || [];
+      totalRooms = rooms.length;
+      const byType = {};
+      rooms.forEach((r) => {
+        const t = r.roomType || 'Unknown';
+        byType[t] = (byType[t] || 0) + 1;
+      });
+      roomCategories = Object.entries(byType).map(([name, count]) => ({ name, count }));
+    } catch {
+      // Schema may not exist
+    }
+
+    res.json({
+      hotel: hotel.toJSON(),
+      totalRooms,
+      roomCategories,
+      managers,
+    });
+  } catch (error) {
+    console.error('Get hotel profile error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+/**
+ * @route   POST /api/hotels/:id/assign-manager
+ * @desc    Assign user as property manager
+ * @access  Private (Super Admin only)
+ */
+router.post('/:id/assign-manager', requireSuperAdmin, [
+  body('userId').notEmpty(),
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const hotel = await Hotel.findByPk(req.params.id);
+    if (!hotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+    const user = await User.findByPk(req.body.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.hotelId = hotel.id;
+    await user.save();
+    res.json({ message: 'Manager assigned', user: { id: user.id, name: user.name, email: user.email } });
+  } catch (error) {
+    console.error('Assign manager error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 router.delete('/:id', requireSuperAdmin, async (req, res) => {
   try {
     const hotel = await Hotel.findByPk(req.params.id);

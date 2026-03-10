@@ -38,6 +38,10 @@ const connectDB = async () => {
       console.log('Database tables synced successfully');
     }
 
+    // Ensure hotel_profiles has optional columns (description, hours, social links)
+    const { ensureHotelProfileColumns } = require('../utils/ensureHotelProfileColumns');
+    await ensureHotelProfileColumns();
+
     // One-time: allow roomType as any string (Single, Double, etc.) in hotel schemas
     const { migrateRoomTypeToVarchar } = require('../utils/migrateRoomTypeToVarchar');
     await migrateRoomTypeToVarchar();

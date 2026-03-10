@@ -81,6 +81,11 @@ app.use('/api/plans', require('./routes/plans'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/roles', require('./routes/roles'));
 app.use('/api/hotel-data', require('./routes/hotelData'));
+app.use('/api/settings-dashboard', require('./routes/settingsDashboardRoutes'));
+app.use('/api/multi-property', require('./routes/multiPropertyRoutes'));
+app.use('/api/help-system', require('./routes/helpSystemRoutes'));
+app.use('/api/user-guide', require('./routes/userGuideRoutes'));
+app.use('/api/activity-logs', require('./routes/activityLogsRoutes'));
 
 // Health check route
 app.get('/api/health', (req, res) => {
