@@ -86,6 +86,9 @@ app.use('/api/multi-property', require('./routes/multiPropertyRoutes'));
 app.use('/api/help-system', require('./routes/helpSystemRoutes'));
 app.use('/api/user-guide', require('./routes/userGuideRoutes'));
 app.use('/api/activity-logs', require('./routes/activityLogsRoutes'));
+app.use('/api/support-tickets', require('./routes/supportTicketsRoutes'));
+app.use('/api/backup', require('./routes/backupRoutes'));
+app.use('/api/system-updates', require('./routes/systemUpdateRoutes'));
 
 // Health check route
 app.get('/api/health', (req, res) => {

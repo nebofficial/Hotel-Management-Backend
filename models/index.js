@@ -9,6 +9,9 @@ const RoomTypeDefinition = require('./RoomTypeDefinition');
 const HotelAmenity = require('./HotelAmenity');
 const HelpSystemSnapshot = require('./HelpSystemSnapshot');
 const ActivityLog = require('./ActivityLog');
+const SupportTicket = require('./SupportTicket');
+const BackupJob = require('./BackupJob');
+const Notification = require('./Notification');
 
 // Define associations
 User.belongsTo(Hotel, { foreignKey: 'hotelId', as: 'hotel' });
@@ -46,5 +49,8 @@ module.exports = {
   HotelAmenity,
   HelpSystemSnapshot,
   ActivityLog,
+  SupportTicket,
+  BackupJob,
+  Notification,
 };
 

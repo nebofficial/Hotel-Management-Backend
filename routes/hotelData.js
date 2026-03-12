@@ -29,6 +29,9 @@ const createRefundRoutes = require('./refundRoutes');
 const createCreditNoteRoutes = require('./creditNoteRoutes');
 const createCommissionRoutes = require('./commissionRoutes');
 const createReportsDashboardRoutes = require('./reportsDashboardRoutes');
+const createOverviewRoutes = require('./overviewRoutes');
+const createTodayActivityRoutes = require('./todayActivityRoutes');
+const createNotificationRoutes = require('./notificationRoutes');
 const createOccupancyReportRoutes = require('./occupancyReportRoutes');
 const createRoomRevenueRoutes = require('./roomRevenueRoutes');
 const createRestaurantSalesRoutes = require('./restaurantSalesRoutes');
@@ -171,7 +174,10 @@ router.use('/:hotelId/payroll', createPayrollRoutes(getHotelContext));
 // ==================== COMMISSION (MODULE ROUTER) ====================
 router.use('/:hotelId/commission', createCommissionRoutes(getHotelContext));
 
-// ==================== REPORTS DASHBOARD (MODULE ROUTER) ====================
+// ==================== DASHBOARD & REPORTS (MODULE ROUTER) ====================
+router.use('/:hotelId/overview-kpis', createOverviewRoutes(getHotelContext));
+router.use('/:hotelId/today-activity', createTodayActivityRoutes(getHotelContext));
+router.use('/:hotelId/notifications', createNotificationRoutes(getHotelContext));
 router.use('/:hotelId/reports-dashboard', createReportsDashboardRoutes(getHotelContext));
 router.use('/:hotelId/occupancy-report', createOccupancyReportRoutes(getHotelContext));
 router.use('/:hotelId/room-revenue', createRoomRevenueRoutes(getHotelContext));
