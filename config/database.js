@@ -1,9 +1,12 @@
 const { Sequelize } = require('sequelize');
 
-// Get PostgreSQL connection details from environment
-const DB_NAME = process.env.DB_NAME || 'hotel_db';
-const DB_USER = process.env.DB_USER || 'mero_hotel';
-const DB_PASSWORD = process.env.DB_PASSWORD || '2057@JKhotel';
+// Get PostgreSQL connection details from environment.
+// Defaults are aligned with your local development setup
+// (see .env) so that if environment variables are missing,
+// the app still connects using postgres/root to the Hotel DB.
+const DB_NAME = process.env.DB_NAME || 'Hotel';
+const DB_USER = process.env.DB_USER || 'postgres';
+const DB_PASSWORD = process.env.DB_PASSWORD || 'root';
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 5432;
 
@@ -129,6 +132,14 @@ const connectDB = async () => {
     // Ensure Expense (finance) table exists for all existing hotel schemas
     const syncFinanceTables = require('../utils/syncFinanceTables');
     await syncFinanceTables();
+
+    // Ensure RoomBill table exists for all hotel schemas (used in revenue reports)
+    const { syncRoomBillTables } = require('../utils/syncRoomBillTables');
+    await syncRoomBillTables();
+
+    // Ensure Attendance table exists for all hotel schemas (used in HR reports)
+    const { syncAttendanceTables } = require('../utils/syncAttendanceTables');
+    await syncAttendanceTables();
   } catch (error) {
     console.error(`PostgreSQL Connection Error: ${error.message}`);
     console.error('Please make sure:');

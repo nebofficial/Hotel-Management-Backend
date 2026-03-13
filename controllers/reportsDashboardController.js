@@ -18,14 +18,16 @@ exports.getRevenueSummary = async (req, res) => {
       createdAt: { [Op.between]: [new Date(startDate), new Date(endDate + 'T23:59:59')] },
     };
 
-    const roomBills = await RoomBill.findAll({ where: billWhere });
+    // Some hotel schemas may not have all tables yet (fresh/partial setup).
+    // Return safe defaults instead of failing the entire dashboard.
+    const roomBills = await RoomBill.findAll({ where: billWhere }).catch(() => []);
     const roomRevenue = roomBills.reduce((sum, b) => sum + parseFloat(b.grandTotal || 0), 0);
 
     const orderWhere = {
       status: { [Op.ne]: 'Cancelled' },
       createdAt: { [Op.between]: [new Date(startDate), new Date(endDate + 'T23:59:59')] },
     };
-    const orders = await RoomServiceOrder.findAll({ where: orderWhere });
+    const orders = await RoomServiceOrder.findAll({ where: orderWhere }).catch(() => []);
     const restaurantRevenue = orders.reduce((sum, o) => sum + parseFloat(o.totalAmount || 0), 0);
 
     const totalRevenue = roomRevenue + restaurantRevenue;
